@@ -1,3 +1,6 @@
+# Todo Ninja
+This branch is for the application Todo Ninja
+
 # vuetify-playlist
 The course files for the Vuetify playlist on The Net Ninja YouTube channel.
 
