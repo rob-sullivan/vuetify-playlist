@@ -7,6 +7,28 @@
                 <span>Ninja</span>
             </v-toolbar-title>
             <v-spacer></v-spacer>
+            <!-- dropdown menu -->
+              <div class="text-center">
+                <v-menu offset-y>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      text
+                      color="grey"
+                      dark
+                      v-bind="attrs"
+                      v-on="on"
+                    >
+                      <v-icon left>mdi-arrow-down-drop-circle-outline</v-icon>
+                      <span>Menu</span>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item v-for="link in links" :key="link.text" router :to="link.route" color="primary">
+                      <v-list-item-title>{{ link.text }}</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
+              </div>
             <v-btn color="grey" text>
                 <span>Sign Out</span>
                 <v-icon right>mdi-exit-to-app</v-icon>
@@ -19,6 +41,9 @@
                 <img src="/avatar-1.png" alt="">
               </v-avater>
               <p class="white--text subheading mt-1">The Net Ninja</p>
+            </v-flex>
+            <v-flex mt-4 mb-3>
+              <Popup />
             </v-flex>
           </v-layout>
         <v-list>
@@ -35,7 +60,9 @@
     </nav>
 </template>
 <script>
+import Popup from './Popup'
 export default {
+  components: {Popup},
   data() {
     return {
       drawer: false,
