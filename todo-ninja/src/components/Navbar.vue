@@ -37,9 +37,9 @@
         <v-navigation-drawer app v-model="drawer" class="primary">
           <v-layout column align-center>
             <v-flex class="mt-5">
-              <v-avater size="100">
+              <v-avatar size="100">
                 <img src="/avatar-1.png" alt="">
-              </v-avater>
+              </v-avatar>
               <p class="white--text subheading mt-1">The Net Ninja</p>
             </v-flex>
             <v-flex mt-4 mb-3>
