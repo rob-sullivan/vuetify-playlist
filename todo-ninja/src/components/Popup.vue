@@ -19,9 +19,9 @@
           Add new project
         </v-card-title>
         <v-card-text>
-            <v-form class="px-3">
-                <v-text-field label="Title" v-model="title" prepend-icon="mdi-folder"></v-text-field>
-                <v-textarea label="Information" v-model="content" prepend-icon="mdi-pencil"></v-textarea>
+            <v-form class="px-3" ref="form">
+                <v-text-field label="Title" v-model="title" prepend-icon="mdi-folder" :rules="inputRules"></v-text-field>
+                <v-textarea label="Information" v-model="content" prepend-icon="mdi-pencil" :rules="inputRules"></v-textarea>
                 <!-- Date picker -->
                 <v-dialog
                   ref="dialog"
@@ -32,12 +32,13 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      v-model="due"
+                      v-model="FormattedDate"
                       label="Due On"
                       prepend-icon="mdi-calendar"
                       readonly
                       v-bind="attrs"
                       v-on="on"
+                      :rules="inputRules"
                     ></v-text-field>
                   </template>
                   <v-date-picker
@@ -61,7 +62,7 @@
                     </v-btn>
                   </v-date-picker>
                 </v-dialog>
-                <v-btn class="mx-0 mt-3 white--text" color="#3cd1c2" @click="submit">Add Project</v-btn>
+                <v-btn class="mx-0 mt-3 white--text" color="#3cd1c2" @click="submit" :loading="loading">Add Project</v-btn>
             </v-form>
         </v-card-text>
       </v-card>
@@ -69,7 +70,9 @@
 </template>
 
 <script>
-import { format, parseISO } from 'date-fns'
+import { format } from 'date-fns'
+import parseISO from 'date-fns/parseISO'
+import db from '@/fb'
 
 export default {
   data(){
@@ -81,16 +84,34 @@ export default {
       menu: false,
       modal: false,
       menu2: false,
+      inputRules: [
+        v => v.length >= 3 || 'Minimum length is 3 characters'
+      ],
+      loading: false
     }
   },
   methods: {
     submit(){
-      console.log(this.title, this.content, this.date)
+      if(this.$refs.form.validate()){
+        this.loading = true
+        const project = {
+          title: this.title, 
+          content: this.content,
+          due: format(parseISO(this.due), 'do MMM yyyy'),
+          person: 'The Net Ninja',
+          status: 'ongoing'
+        }
+        db.collection('projects').add(project).then(() => {
+          this.loading = false
+          this.dialog = false
+          this.$emit('projectAdded')
+        })
+      }
     },
   },
   computed: {
     FormattedDate () {
-      return this.date ? format(this.date, 'Do, MMM YYYY') : ''
+      return this.due ? format(parseISO(this.due), 'do MMM yyyy') : ''
     },
   },
 }
